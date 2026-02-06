@@ -10,38 +10,33 @@ import '../models/ride/ride.dart';
 class RidesService {
   static List<Ride> allRides = fakeRides;
 
-  static List<Ride> filterByDeparture(Location departure) {
-    List<Ride> filteredRide = [];
-    allRides.map((r) {
-      if (r.departureLocation == departure) {
-        filteredRide.add(r);
-      }
-    });
-    return filteredRide;
+  static List<Ride> _filterByDeparture(List<Ride> rides, Location departure) {
+    return rides.where((ride) => ride.departureLocation == departure).toList();
   }
 
-  static List<Ride> filterByRequestSeats(int seatRequest) {
-    List<Ride> filteredRide = [];
-    allRides.map((r) {
-      if (r.remainingSeats >= seatRequest) {
-        filteredRide.add(r);
-      }
-    });
-    return filteredRide;
+  //
+  //  filter the rides starting for the given requested seat number
+  //
+  static List<Ride> _filterBySeatRequested(
+    List<Ride> rides,
+    int requestedSeat,
+  ) {
+    return rides.where((ride) => ride.availableSeats >= requestedSeat).toList();
   }
 
+  //
+  //  filter the rides   with several optional criteria (flexible filter options)
+  //
   static List<Ride> filterBy({Location? departure, int? seatRequested}) {
-    if (departure == null || seatRequested == null) {
-      return [];
-    }
-    List<Ride> filteredRide = [];
-    allRides.map((r) {
-      if (r.departureLocation == departure ||
-          r.remainingSeats >= seatRequested) {
-        filteredRide.add(r);
-      }
-    });
+    List<Ride> result = allRides;
 
-    return filteredRide;
+    if (departure != null) {
+      result = _filterByDeparture(result, departure);
+    }
+    if (seatRequested != null) {
+      result = _filterBySeatRequested(result, seatRequested);
+    }
+
+    return result;
   }
 }
