@@ -12,11 +12,20 @@ const String blablaHomeImagePath = 'assets/images/blabla_home.png';
 /// - Enter his/her ride preference and launch a search on it
 /// - Or select a last entered ride preferences and launch a search on it
 ///
-class RidePrefsScreen extends StatelessWidget {
+class RidePrefsScreen extends StatefulWidget {
   const RidePrefsScreen({super.key});
 
+  @override
+  State<RidePrefsScreen> createState() => _RidePrefsScreenState();
+}
+
+class _RidePrefsScreenState extends State<RidePrefsScreen> {
+  RidePref? currentRidePref = RidePrefsService.selectedRidePref;
   void onRidePrefSelected(RidePref ridePref) {
     // TODO
+    setState(() {
+      currentRidePref = ridePref;
+    });
   }
 
   @override
@@ -48,12 +57,13 @@ class RidePrefsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-
               // 2 - THE FORM
-              RidePrefForm(initRidePref: RidePrefsService.selectedRidePref),
+              RidePrefForm(
+                key: ValueKey(currentRidePref),
+                initRidePref: currentRidePref),
               SizedBox(height: BlaSpacings.m),
 
-              // 3 - THE HISTORY 
+              // 3 - THE HISTORY
               SizedBox(
                 height: 200, // Set a fixed height
                 child: ListView.builder(
