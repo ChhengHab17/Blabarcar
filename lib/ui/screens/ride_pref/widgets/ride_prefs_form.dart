@@ -6,6 +6,7 @@ import 'package:blablacar/ui/widgets/display/bla_divider.dart';
 import 'package:blablacar/ui/widgets/inputs/bla_date_tile.dart';
 import 'package:blablacar/ui/widgets/inputs/bla_location_tile.dart';
 import 'package:blablacar/ui/widgets/inputs/bla_passenger_tile.dart';
+import 'package:blablacar/utils/animations_util.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../models/ride/locations.dart';
@@ -69,9 +70,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
   Future<void> onSelectLocation({required bool isDeparture}) async {
     final result = await Navigator.push<Location>(
       context,
-      MaterialPageRoute<Location>(
-        builder: (ctx) => const LocationPickerScreen(),
-      ),
+      AnimationUtils.createBottomToTopRoute(const LocationPickerScreen()),
     );
     if (result != null) {
       setState(() {
@@ -107,7 +106,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
         children: [
           BlaLocationTile(
             location: departure,
-            onTap:() => onSelectLocation(isDeparture: true),
+            onTap: () => onSelectLocation(isDeparture: true),
             type: TileType.departure,
             trailingIcon: BlaSwitchButton(onClick: onSwitch),
           ),
