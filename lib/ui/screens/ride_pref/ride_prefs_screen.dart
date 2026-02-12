@@ -1,5 +1,8 @@
+import 'package:blablacar/models/ride/ride.dart';
 import 'package:blablacar/models/ride_pref/ride_pref.dart';
 import 'package:blablacar/services/ride_prefs_service.dart';
+import 'package:blablacar/services/rides_service.dart';
+import 'package:blablacar/ui/screens/rides/rides_screen.dart';
 import 'package:flutter/material.dart';
 import '../../theme/theme.dart';
 import 'widgets/ride_prefs_form.dart';
@@ -26,6 +29,18 @@ class _RidePrefsScreenState extends State<RidePrefsScreen> {
     setState(() {
       currentRidePref = ridePref;
     });
+  }
+
+  void onRideSearch(RidePref ridePref) {
+    List<Ride> filteredRides = RidesService.filterBy(
+      departure: ridePref.departure,
+      seatRequested: ridePref.requestedSeats
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (ctx) => RidesScreen(rides: filteredRides)),
+    );
   }
 
   @override
@@ -60,7 +75,9 @@ class _RidePrefsScreenState extends State<RidePrefsScreen> {
               // 2 - THE FORM
               RidePrefForm(
                 key: ValueKey(currentRidePref),
-                initRidePref: currentRidePref),
+                initRidePref: currentRidePref,
+                onSearch: onRideSearch,
+              ),
               SizedBox(height: BlaSpacings.m),
 
               // 3 - THE HISTORY

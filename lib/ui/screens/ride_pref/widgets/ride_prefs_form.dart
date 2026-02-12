@@ -24,8 +24,9 @@ import '../../../../models/ride_pref/ride_pref.dart';
 class RidePrefForm extends StatefulWidget {
   // The form can be created with an optional initial RidePref.
   final RidePref? initRidePref;
+  final Function(RidePref) onSearch;
 
-  const RidePrefForm({super.key, this.initRidePref});
+  const RidePrefForm({super.key, this.initRidePref, required this.onSearch});
 
   @override
   State<RidePrefForm> createState() => _RidePrefFormState();
@@ -83,6 +84,26 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
+  Future<void> onRideSearch() async {
+    if (departure == null) {
+      await onSelectLocation(isDeparture: true);
+      return;
+    }
+    if (arrival == null) {
+      await onSelectLocation(isDeparture: false);
+      return;
+    }
+    if (departure == null || arrival == null) return;
+    final ridePref = RidePref(
+      departure: departure!,
+      departureDate: departureDate,
+      arrival: arrival!,
+      requestedSeats: requestedSeats,
+    );
+
+    widget.onSearch(ridePref);
+  }
+
   // ----------------------------------
   // Compute the widgets rendering
   // ----------------------------------
@@ -121,7 +142,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
           BlaDivider(),
           BlaPassengerTile(numberOfPassenger: requestedSeats, onTap: () {}),
           BlaDivider(),
-          BlaButton(title: "Search", onClick: () {}),
+          BlaButton(title: "Search", onClick: onRideSearch),
         ],
       ),
     );
